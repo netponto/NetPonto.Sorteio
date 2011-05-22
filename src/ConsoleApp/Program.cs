@@ -8,9 +8,20 @@ namespace NetPonto.Sorteio.ConsoleApp
     {
         static string[] participantes =
             {
-                "Ana Ribeiro", 
-                "Pedro Silva", 
-                "Ricardo Santos"
+				"Bruno Lopes",
+				"Bárbara Castilho",
+				"Caio Proiete",
+				"Dmitry Ossipov",
+				"Henrry Pires",
+				"João Manso",
+				"Jorge Silva",
+				"Nuno Gomes",
+				"Paulo Correia",
+				"Paulo Morgado",
+				"Pedro Rosa",
+				"Sara Silva",
+				"Ricardo Alves",
+				"Virgílio Raposo",
             };
 
         static void Main()
