@@ -34,6 +34,7 @@ namespace SilverlightApp.Controls
         public void SetTags(string[] list)
         {
             tags = list;
+            TopItem = null;
 
             if (!isLoaded)
             {
