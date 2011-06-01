@@ -5,6 +5,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightApp", "Silverlig
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{E3F62A26-1B46-41C1-802D-B06501F1AEFF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{A61E2052-51D2-4A58-9A83-C18017A97500}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{6415118F-217E-449D-A915-29686B0FCCF5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Axelerate.Silverlight3D", "Axelerate.Silverlight3D", "{6B461E2A-CF01-47FF-BC66-024F5E598DF2}"
+	ProjectSection(SolutionItems) = preProject
+		..\lib\Axelerate.Silverlight3D\Axelerate.Silverlight3D.dll = ..\lib\Axelerate.Silverlight3D\Axelerate.Silverlight3D.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,5 +47,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B461E2A-CF01-47FF-BC66-024F5E598DF2} = {A61E2052-51D2-4A58-9A83-C18017A97500}
+		{E3F62A26-1B46-41C1-802D-B06501F1AEFF} = {6415118F-217E-449D-A915-29686B0FCCF5}
+		{58B1E41A-5903-4DB5-A35B-FC0DFE7C17F7} = {6415118F-217E-449D-A915-29686B0FCCF5}
 	EndGlobalSection
 EndGlobal

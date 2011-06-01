@@ -7,65 +7,66 @@ using System.Windows.Threading;
 
 namespace SilverlightApp.Controls
 {
-	public partial class TagRandomizer : UserControl
-	{
-		private int ticks = 0;
-		private readonly List<string> members;
-		private string selectedMember;
+    public partial class TagRandomizer : UserControl
+    {
+        #region Fields
+        private DispatcherTimer _timer;
+        private int _ticks;
+        private Random _random;
+        private List<string> _members;
+        #endregion
 
-		public TagRandomizer(IEnumerable<string> memberInput)
-		{
-			InitializeComponent();
+        #region Constructor
+        public TagRandomizer(IEnumerable<string> memberInput)
+        {
+            InitializeComponent();
 
-			var r = new Random();
+            _random = new Random();
 
-			members = memberInput.OrderBy(b => r.Next()).ToList();
-			selectedMember = string.Empty; 
+            _members = memberInput.OrderBy(b => _random.Next())
+                                  .ToList();
 
-			Cloud.SetTags(members.ToArray());
-		}
+            _ticks = 0;
 
-		private void RandomMembers()
-		{
-			var timer = new DispatcherTimer();
+            _timer = new DispatcherTimer();
+            _timer.Tick += Timer_Tick;
+        }
+        #endregion
 
-			timer.Tick += timer_Tick;
-			timer.Interval = TimeSpan.FromSeconds(0);
-			timer.Start();
-		}
+        #region Methods
+        private void RandomMembers()
+        {
+            _timer.Interval = TimeSpan.FromSeconds(0);
+            _timer.Start();
+        }
 
-		private void timer_Tick(object sender, EventArgs e)
-		{
-			var random = new Random();
-			ticks++;
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            _ticks++;
 
-			if (ticks < 4)
-			{
-				this.Cloud.RandomRotate();
-				((DispatcherTimer) sender).Interval = TimeSpan.FromMilliseconds(random.Next(1500, 2000));
-			}
-			else
-			{
-				this.ticks = 0;
-				selectedMember = Cloud.TopItem.Content.ToString();
-				((DispatcherTimer) sender).Stop();
-			}
-		}
+            if (_ticks < 4)
+            {
+                this.Cloud.RandomRotate();
+                _timer.Interval = TimeSpan.FromMilliseconds(_random.Next(1500, 2000));
+            }
+            else
+            {
+                _timer.Stop();
+                _ticks = 0;
+            }
+        }
 
-		private void Go_Click(object sender, RoutedEventArgs e)
-		{
-			if (selectedMember != string.Empty)
-			{
-				members.Remove(selectedMember);
-				selectedMember = string.Empty;
-				Cloud.SetTags(members.ToArray());
-			}
-			else
-			{
-				Cloud.SetTags(members.ToArray());
-			}
-			
-			RandomMembers(); 
-		}
-	}
+        private void Go_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedTag = Cloud.TopItem;
+            if (selectedTag != null)
+            {
+                _members.Remove(selectedTag.Content.ToString());
+            }
+
+            Cloud.SetTags(_members.ToArray());
+            RandomMembers();
+        }
+        #endregion
+    }
 }
