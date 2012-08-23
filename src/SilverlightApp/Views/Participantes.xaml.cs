@@ -61,6 +61,9 @@ namespace SilverlightApp.Views
 
             // add new participant
             ParticipantsList.Items.Add(NewParticipant.Text);
+
+            // clear textbox
+            NewParticipant.Text = string.Empty;
         }
 
         private void Ler_Click(object sender, RoutedEventArgs e)
@@ -106,6 +109,14 @@ namespace SilverlightApp.Views
             //{
             //    this.PreencherParticipantes(file);
             //}
+        }
+
+        private void NewParticipant_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                this.AddParticipant_Click(null, null);
+            }
         }
 
 

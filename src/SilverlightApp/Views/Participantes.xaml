@@ -59,7 +59,7 @@
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     Width="Auto">
-            <TextBox Name="NewParticipant" Width="300" FontSize="16" />
+            <TextBox Name="NewParticipant" Width="300" FontSize="16" KeyDown="NewParticipant_KeyDown" />
             <Button Name="AddParticipant" 
                     Width="32" Height="32" 
                     Margin="10,0"
