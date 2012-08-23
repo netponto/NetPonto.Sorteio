@@ -71,7 +71,7 @@
 
         <Image Source="Assets/Images/Background.png" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Opacity="0.15" Width="800" Height="800" Margin="0,0,-50,-75"/>
 
-        <Controls:TagCloud x:Name="Cloud" Width="800" Height="600"
+        <Controls:TagCloud x:Name="Cloud" Width="800" Height="450"
                            Grid.RowSpan="2">
         </Controls:TagCloud>
 

@@ -5,30 +5,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+             xmlns:con="clr-namespace:Kent.Boogaart.Converters;assembly=Kent.Boogaart.Converters"
+             xmlns:SorteioViews="clr-namespace:SilverlightApp.Views"
+             DataContext="{StaticResource ViewModel}"
              d:DesignHeight="600"
-             d:DesignWidth="700">
-
+             d:DesignWidth="800">
+    <UserControl.Resources>
+        <con:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
     <Grid x:Name="LayoutRoot"
           Background="White">
-        <Grid.Resources>
-            <Style x:Key="ImageButtonStyle" TargetType="Button">
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Width="Auto" />
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="85" />
+            <RowDefinition Height="65" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid
@@ -51,86 +41,22 @@
                 HorizontalAlignment="Right"
                 Margin="10,4"/>
         </Grid>
-        
-        <sdk:Label Name="ParticipantsListHeader"
-                   Grid.Row="1"
-                   HorizontalAlignment="Left"
-                   Margin="20,10,10,0"
-                   VerticalAlignment="Top"
-                   FontSize="14"
-                   Content="Participantes:" />
 
-        <ListBox Name="ParticipantsList" 
-                 Grid.Row="2"
-                 Margin="20,5" 
-                 FontSize="20"
-                 SizeChanged="ParticipantsList_SizeChanged">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Name="RemoveParticipant"
-                                Width="24" Height="24" 
-                                Style="{StaticResource ImageButtonStyle}"
-                                Click="RemoveParticipant_Click"
-                                CommandParameter="{Binding}">
-                            <Image Source="/SilverlightApp;component/Assets/Images/Delete.png" />
-                        </Button>
-                        <TextBlock Margin="10,0,0,0" Text="{Binding}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <toolkit:WrapPanel Orientation="Vertical"/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-        </ListBox>
-
-        <StackPanel Orientation="Horizontal" 
-                    Grid.Row="3" 
-                    Margin="20,10,20,10"
-                    VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch"
-                    Width="Auto">
-            <TextBox Name="NewParticipant" Width="300" />
-            <Button Name="AddParticipant" 
-                    Width="32" Height="32" 
-                    Margin="10,0"
-                    Style="{StaticResource ImageButtonStyle}"
-                    Click="AddParticipant_Click">
-                <Image Source="/SilverlightApp;component/Assets/Images/Add.png" />
-            </Button>
+        <StackPanel 
+            Grid.Row="1"
+            Name="OptionsStackPanel" 
+            Orientation="Horizontal"
+            Margin="20,5,20,0">
+            <RadioButton Style="{StaticResource LinkStyle}" x:Name="Participantes" Content="Participantes" Margin="0,0,25,0" IsChecked="True" />
+            <RadioButton Style="{StaticResource LinkStyle}" x:Name="Premios" Content="Prémios" IsEnabled="False" />
+            <RadioButton Style="{StaticResource LinkStyle}" x:Name="Sorteio" Content="Sorteio" Checked="Sorteio_Checked" />
+            <RadioButton Style="{StaticResource LinkStyle}" x:Name="Resultados" Content="Resultados" Margin="25,0,0,0" IsEnabled="False" />
         </StackPanel>
 
-        <Grid
-            Grid.Row="4"
-            Margin="10,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Button Name="Ler"
-                Grid.Column="0"
-                Height="35"
-                HorizontalAlignment="Left"
-                Margin="10"
-                Content="Ler participantes"
-                VerticalAlignment="Center"
-                Width="120" 
-                Click="Ler_Click" />
-            <Button Name="Sortear"
-                Grid.Column="2"
-                Height="35"
-                HorizontalAlignment="Right"
-                Margin="10"
-                Content="Sortear"
-                VerticalAlignment="Center"
-                Width="120"
-                FontSize="16"
-                FontWeight="Bold"
-                Click="Sortear_Click" />
+        <Grid Grid.Row="2" Margin="0,36,0,0">
+            <SorteioViews:Participantes x:Name="viewParticipantes" Visibility="{Binding ElementName=Participantes, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <SorteioViews:Sorteio x:Name="viewSorteio" Visibility="{Binding ElementName=Sorteio, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
-        
+
     </Grid>
 </UserControl>
