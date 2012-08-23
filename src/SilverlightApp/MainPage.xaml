@@ -24,22 +24,45 @@
             </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>
+            <RowDefinition Height="85" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <Grid
+            Grid.Row="0"
+            Margin="10,10,10,2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image 
+                Grid.Column="0"
+                Source="/SilverlightApp;component/Assets/Images/Logo.png" 
+                Stretch="Uniform"
+                HorizontalAlignment="Left"
+                Margin="10,0"/>
+            <Image 
+                Grid.Column="1"
+                Source="/SilverlightApp;component/Assets/Images/HeaderElement.png"
+                Stretch="Uniform"
+                HorizontalAlignment="Right"
+                Margin="10,4"/>
+        </Grid>
+        
         <sdk:Label Name="ParticipantsListHeader"
-                   Grid.Row="0"
+                   Grid.Row="1"
                    HorizontalAlignment="Left"
-                   Margin="20,10,10,10"
+                   Margin="20,10,10,0"
                    VerticalAlignment="Top"
+                   FontSize="14"
                    Content="Participantes:" />
 
         <ListBox Name="ParticipantsList" 
-                 Grid.Row="1"
-                 Margin="20" 
+                 Grid.Row="2"
+                 Margin="20,5" 
                  FontSize="20"
                  SizeChanged="ParticipantsList_SizeChanged">
             <ListBox.ItemTemplate>
@@ -64,7 +87,7 @@
         </ListBox>
 
         <StackPanel Orientation="Horizontal" 
-                    Grid.Row="2" 
+                    Grid.Row="3" 
                     Margin="20,10,20,10"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
@@ -80,7 +103,7 @@
         </StackPanel>
 
         <Grid
-            Grid.Row="3"
+            Grid.Row="4"
             Margin="10,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
