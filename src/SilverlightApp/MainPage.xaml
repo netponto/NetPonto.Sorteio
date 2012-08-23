@@ -5,8 +5,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-             d:DesignHeight="300"
-             d:DesignWidth="400">
+             d:DesignHeight="600"
+             d:DesignWidth="700">
 
     <Grid x:Name="LayoutRoot"
           Background="White">
@@ -79,14 +79,35 @@
             </Button>
         </StackPanel>
 
-        <Button Name="Sortear"
-                Grid.Row="3"
-                Height="23"
+        <Grid
+            Grid.Row="3"
+            Margin="10,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="Ler"
+                Grid.Column="0"
+                Height="35"
+                HorizontalAlignment="Left"
+                Margin="10"
+                Content="Ler participantes"
+                VerticalAlignment="Center"
+                Width="120" 
+                Click="Ler_Click" />
+            <Button Name="Sortear"
+                Grid.Column="2"
+                Height="35"
                 HorizontalAlignment="Right"
-                Margin="10,10,20,10"
+                Margin="10"
                 Content="Sortear"
                 VerticalAlignment="Center"
-                Width="75"
+                Width="120"
+                FontSize="16"
+                FontWeight="Bold"
                 Click="Sortear_Click" />
+        </Grid>
+        
     </Grid>
 </UserControl>

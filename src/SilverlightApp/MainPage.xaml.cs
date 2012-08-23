@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 using SilverlightApp.Controls;
+using System.Text;
 
 namespace SilverlightApp
 {
@@ -39,6 +40,7 @@ namespace SilverlightApp
 
             // ensure item list is empty before applying new source
             ParticipantsList.Items.Clear();
+            // load the default participants to the list
             _participantes.ForEach(x => ParticipantsList.Items.Add(x));
 
             this.KeyDown += MainPage_KeyDown;
@@ -98,6 +100,34 @@ namespace SilverlightApp
             // add new participant
             ParticipantsList.Items.Add(NewParticipant.Text);
         }
+
+        private void Ler_Click(object sender, RoutedEventArgs e)
+        {
+            // allow the user to pick a .txt file
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Ficheiro de texto|*.txt";
+            
+            if (dialog.ShowDialog().Value)
+            {
+                // clear the participants list
+                ParticipantsList.Items.Clear();
+
+                // open the file
+                using (StreamReader reader = new StreamReader(dialog.File.OpenRead(), true))
+                {
+                    // read each line of the file
+                    string participant;
+                    while ((participant = reader.ReadLine()) != null)
+                    {
+                        // validate that the participant is filled in
+                        if (!string.IsNullOrWhiteSpace(participant))
+                            ParticipantsList.Items.Add(participant.Trim());
+                    }
+                }
+            }
+        }
         #endregion
+
+        
     }
 }
