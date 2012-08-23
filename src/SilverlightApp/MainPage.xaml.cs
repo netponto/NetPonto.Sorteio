@@ -13,7 +13,7 @@ namespace SilverlightApp
 {
     public partial class MainPage : UserControl
     {
-        
+
         #region Fields
         private List<string> _participantes = new List<string> 
         {
@@ -78,9 +78,9 @@ namespace SilverlightApp
             }
         }
 
-        private void viewParticipantes_Loaded(object sender, RoutedEventArgs e)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            this.viewParticipantes.LerParticipantes();
         }
 
 

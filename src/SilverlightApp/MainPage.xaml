@@ -9,7 +9,7 @@
              xmlns:SorteioViews="clr-namespace:SilverlightApp.Views"
              DataContext="{StaticResource ViewModel}"
              d:DesignHeight="600"
-             d:DesignWidth="800">
+             d:DesignWidth="800" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <con:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
@@ -54,7 +54,7 @@
         </StackPanel>
 
         <Grid Grid.Row="2" Margin="0,36,0,0">
-            <SorteioViews:Participantes x:Name="viewParticipantes" Visibility="{Binding ElementName=Participantes, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Loaded="viewParticipantes_Loaded" />
+            <SorteioViews:Participantes x:Name="viewParticipantes" Visibility="{Binding ElementName=Participantes, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <SorteioViews:Sorteio x:Name="viewSorteio" Visibility="{Binding ElementName=Sorteio, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
 

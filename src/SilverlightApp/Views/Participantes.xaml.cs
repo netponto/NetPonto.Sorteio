@@ -47,9 +47,17 @@ namespace SilverlightApp.Views
 
         private void AddParticipant_Click(object sender, RoutedEventArgs e)
         {
-            // valdiate there's text
+            // validate there's text
             if (String.IsNullOrEmpty(NewParticipant.Text))
                 return;
+
+            // validate that the participant doesn't get duplicated
+            var alreadyExists = ParticipantsList.Items.Where(p => string.Compare(p as string, NewParticipant.Text, StringComparison.CurrentCultureIgnoreCase) == 0).Count();
+            if (alreadyExists > 0)
+            {
+                // TODO: should show some kind of message
+                return;
+            }
 
             // add new participant
             ParticipantsList.Items.Add(NewParticipant.Text);
@@ -63,12 +71,12 @@ namespace SilverlightApp.Views
             
             if (dialog.ShowDialog().Value)
             {
-                this.PreencherParticipante(dialog.File);
+                this.PreencherParticipantes(dialog.File);
             }
         }
         #endregion
 
-        private void PreencherParticipante(FileInfo file)
+        private void PreencherParticipantes(FileInfo file)
         {
             // clear the participants list
             ParticipantsList.Items.Clear();
@@ -87,13 +95,17 @@ namespace SilverlightApp.Views
             }
         }
 
-        public void LerParticipantes(string path)
+        public void LerParticipantes()
         {
-            var file = new FileInfo(path);
-            if (file.Exists)
-            {
-                this.PreencherParticipante(file);
-            }
+            // TODO: ler participantes no arranque
+            // Silverlight não permite aceder diretamente aos ficheiros, poderá ser utilizado o IsolatedStorage
+            // http://blogs.silverlight.net/blogs/msnow/archive/2008/07/16/tip-of-the-day-19-using-isolated-storage.aspx
+            //var path = @"Data\Participantes.txt";
+            //var file = new FileInfo(path);
+            //if (file.Exists)
+            //{
+            //    this.PreencherParticipantes(file);
+            //}
         }
 
 
