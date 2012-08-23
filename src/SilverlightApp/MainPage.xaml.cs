@@ -13,6 +13,7 @@ namespace SilverlightApp
 {
     public partial class MainPage : UserControl
     {
+        
         #region Fields
         private List<string> _participantes = new List<string> 
         {
@@ -75,6 +76,11 @@ namespace SilverlightApp
                 // Go full screen
                 //Application.Current.Host.Content.IsFullScreen = true;
             }
+        }
+
+        private void viewParticipantes_Loaded(object sender, RoutedEventArgs e)
+        {
+            
         }
 
 

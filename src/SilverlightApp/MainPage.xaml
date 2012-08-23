@@ -54,7 +54,7 @@
         </StackPanel>
 
         <Grid Grid.Row="2" Margin="0,36,0,0">
-            <SorteioViews:Participantes x:Name="viewParticipantes" Visibility="{Binding ElementName=Participantes, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <SorteioViews:Participantes x:Name="viewParticipantes" Visibility="{Binding ElementName=Participantes, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Loaded="viewParticipantes_Loaded" />
             <SorteioViews:Sorteio x:Name="viewSorteio" Visibility="{Binding ElementName=Sorteio, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
 

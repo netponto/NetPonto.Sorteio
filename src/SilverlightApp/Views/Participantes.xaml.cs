@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using SilverlightApp.Controls;
 using System.IO;
+using SilverlightApp.Helpers;
 
 namespace SilverlightApp.Views
 {
@@ -24,18 +25,8 @@ namespace SilverlightApp.Views
         #region Events
         private void Sortear_Click(object sender, RoutedEventArgs e)
         {
-            this.LayoutRoot.Children.Clear();
-            this.LayoutRoot.RowDefinitions.Clear();
-
-            var memberInput = ParticipantsList.Items.Select(x => x.ToString());
-
-            this.LayoutRoot.Children.Add(new TagRandomizer(memberInput) {
-                VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch
-            });
-
-            // Go full screen
-            Application.Current.Host.Content.IsFullScreen = true;
+            var main = VisualTreeHelpers.FindAncestor<MainPage>(this);
+            main.Sorteio.IsChecked = true;
         }
 
         private void ParticipantsList_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -72,23 +63,39 @@ namespace SilverlightApp.Views
             
             if (dialog.ShowDialog().Value)
             {
-                // clear the participants list
-                ParticipantsList.Items.Clear();
-
-                // open the file
-                using (StreamReader reader = new StreamReader(dialog.File.OpenRead(), true))
-                {
-                    // read each line of the file
-                    string participant;
-                    while ((participant = reader.ReadLine()) != null)
-                    {
-                        // validate that the participant is filled in
-                        if (!string.IsNullOrWhiteSpace(participant))
-                            ParticipantsList.Items.Add(participant.Trim());
-                    }
-                }
+                this.PreencherParticipante(dialog.File);
             }
         }
         #endregion
+
+        private void PreencherParticipante(FileInfo file)
+        {
+            // clear the participants list
+            ParticipantsList.Items.Clear();
+
+            // open the file
+            using (StreamReader reader = new StreamReader(file.OpenRead(), true))
+            {
+                // read each line of the file
+                string participant;
+                while ((participant = reader.ReadLine()) != null)
+                {
+                    // validate that the participant is filled in
+                    if (!string.IsNullOrWhiteSpace(participant))
+                        ParticipantsList.Items.Add(participant.Trim());
+                }
+            }
+        }
+
+        public void LerParticipantes(string path)
+        {
+            var file = new FileInfo(path);
+            if (file.Exists)
+            {
+                this.PreencherParticipante(file);
+            }
+        }
+
+
     }
 }
