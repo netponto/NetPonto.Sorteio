@@ -7,11 +7,13 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 using SilverlightApp.Controls;
+using System.Text;
 
 namespace SilverlightApp
 {
     public partial class MainPage : UserControl
     {
+
         #region Fields
         private List<string> _participantes = new List<string> 
         {
@@ -37,9 +39,10 @@ namespace SilverlightApp
         {
             InitializeComponent();
 
-            // ensure item list is empty before applying new source
-            ParticipantsList.Items.Clear();
-            _participantes.ForEach(x => ParticipantsList.Items.Add(x));
+            //// ensure item list is empty before applying new source
+            //ParticipantsList.Items.Clear();
+            //// load the default participants to the list
+            //_participantes.ForEach(x => ParticipantsList.Items.Add(x));
 
             this.KeyDown += MainPage_KeyDown;
         }
@@ -56,48 +59,31 @@ namespace SilverlightApp
                 }
             }
         }
-
-        private void Sortear_Click(object sender, RoutedEventArgs e)
-        {
-            this.LayoutRoot.Children.Clear();
-            this.LayoutRoot.RowDefinitions.Clear();
-
-            var memberInput = ParticipantsList.Items.Select(x => x.ToString());
-
-            this.LayoutRoot.Children.Add(new TagRandomizer(memberInput) {
-                VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch
-            });
-
-            // Go full screen
-            Application.Current.Host.Content.IsFullScreen = true;
-        }
-
-        private void ParticipantsList_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var wrapPanel = ParticipantsList.GetItemsHost() as WrapPanel;
-            if (wrapPanel == null) return;
-
-            wrapPanel.MaxHeight = ((FrameworkElement)sender).ActualHeight;
-            wrapPanel.MaxWidth = ((FrameworkElement)sender).ActualWidth;
-        }
-
-        private void RemoveParticipant_Click(object sender, RoutedEventArgs e)
-        {
-            var b = sender as Button;
-
-            ParticipantsList.Items.Remove(b.CommandParameter);
-        }
-
-        private void AddParticipant_Click(object sender, RoutedEventArgs e)
-        {
-            // valdiate there's text
-            if (String.IsNullOrEmpty(NewParticipant.Text))
-                return;
-
-            // add new participant
-            ParticipantsList.Items.Add(NewParticipant.Text);
-        }
         #endregion
+
+        private void Sorteio_Checked(object sender, RoutedEventArgs e)
+        {
+            if (this.Sorteio.IsChecked.HasValue && this.Sorteio.IsChecked.Value == true)
+            {
+                var memberInput = this.viewParticipantes.ParticipantsList.Items.Select(x => x.ToString());
+
+                this.viewSorteio.LayoutRoot.Children.Add(new TagRandomizer(memberInput)
+                {
+                    VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch
+                });
+
+                // Go full screen
+                //Application.Current.Host.Content.IsFullScreen = true;
+            }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.viewParticipantes.LerParticipantes();
+        }
+
+
+
     }
 }
