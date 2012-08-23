@@ -22,26 +22,29 @@
         </Grid.RowDefinitions>
 
         <Grid
-            Grid.Row="0"
-            Margin="10,10,10,2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Image 
-                Grid.Column="0"
-                Source="/SilverlightApp;component/Assets/Images/Logo.png" 
-                Stretch="Uniform"
-                HorizontalAlignment="Left"
-                Margin="10,0"/>
-            <Image 
-                Grid.Column="1"
-                Source="/SilverlightApp;component/Assets/Images/HeaderElement.png"
-                Stretch="Uniform"
-                HorizontalAlignment="Right"
-                Margin="10,4"/>
+            Grid.Row="0">
+            <Border BorderThickness="0,0,0,1" BorderBrush="Gainsboro" Margin="20,0"></Border>
+            <Grid
+                Margin="10,10,10,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image 
+                    Grid.Column="0"
+                    Source="/SilverlightApp;component/Assets/Images/Logo.png" 
+                    Stretch="Uniform"
+                    HorizontalAlignment="Left"
+                    Margin="10,0"/>
+                <Image 
+                    Grid.Column="1"
+                    Source="/SilverlightApp;component/Assets/Images/HeaderElement.png"
+                    Stretch="Uniform"
+                    HorizontalAlignment="Right"
+                    Margin="10,4"/>
+            </Grid>
         </Grid>
-
+            
         <StackPanel 
             Grid.Row="1"
             Name="OptionsStackPanel" 
@@ -53,7 +56,7 @@
             <RadioButton Style="{StaticResource LinkStyle}" x:Name="Resultados" Content="Resultados" Margin="25,0,0,0" IsEnabled="False" />
         </StackPanel>
 
-        <Grid Grid.Row="2" Margin="0,36,0,0">
+        <Grid Grid.Row="2" Margin="0,10,0,0">
             <SorteioViews:Participantes x:Name="viewParticipantes" Visibility="{Binding ElementName=Participantes, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <SorteioViews:Sorteio x:Name="viewSorteio" Visibility="{Binding ElementName=Sorteio, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>

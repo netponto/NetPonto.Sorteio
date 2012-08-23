@@ -13,9 +13,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="70" />
         </Grid.RowDefinitions>
 
+        <!--
         <sdk:Label Name="ParticipantsListHeader"
                    Grid.Row="0"
                    HorizontalAlignment="Left"
@@ -23,9 +24,11 @@
                    VerticalAlignment="Top"
                    FontSize="14"
                    Content="Participantes:" />
+        -->
 
         <ListBox Name="ParticipantsList" 
-                 Grid.Row="1"
+                 Grid.Row="0"
+                 Grid.RowSpan="2"
                  Margin="20,5" 
                  FontSize="20"
                  SizeChanged="ParticipantsList_SizeChanged">
@@ -56,7 +59,7 @@
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     Width="Auto">
-            <TextBox Name="NewParticipant" Width="300" />
+            <TextBox Name="NewParticipant" Width="300" FontSize="16" />
             <Button Name="AddParticipant" 
                     Width="32" Height="32" 
                     Margin="10,0"
@@ -67,33 +70,42 @@
         </StackPanel>
 
         <Grid
-            Grid.Row="3"
-            Margin="10,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Button Name="Ler"
-                Grid.Column="0"
-                Height="35"
-                HorizontalAlignment="Left"
-                Margin="10"
-                Content="Ler participantes"
-                VerticalAlignment="Center"
-                Width="120" 
-                Click="Ler_Click" />
-            <Button Name="Sortear"
-                Grid.Column="2"
-                Height="35"
-                HorizontalAlignment="Right"
-                Margin="10"
-                Content="Sortear"
-                VerticalAlignment="Center"
-                Width="120"
-                FontSize="16"
-                FontWeight="Bold"
-                Click="Sortear_Click" />
+            Grid.Row="3">
+            <Border BorderThickness="0,1,0,0" BorderBrush="DarkGray" Margin="20,0"></Border>
+            <Grid
+                Margin="10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Name="Ler"
+                    Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    Margin="30,0"
+                    VerticalAlignment="Center"
+                    Click="Ler_Click"
+                    Style="{StaticResource ImageButtonStyle}">
+                    <StackPanel>
+                        <Image Source="/SilverlightApp;component/Assets/Images/Open.png" Stretch="None" />
+                        <TextBlock FontSize="11" HorizontalAlignment="Center">Ler participantes</TextBlock>
+                    </StackPanel>
+                </Button>
+
+                <Button Name="Sortear"
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    Margin="30,0"
+                    VerticalAlignment="Center"
+                    Click="Sortear_Click"
+                    Style="{StaticResource ImageButtonStyle}">
+                    <StackPanel>
+                        <Image Source="/SilverlightApp;component/Assets/Images/Next.png" Stretch="None" />
+                        <TextBlock FontSize="11" HorizontalAlignment="Center">Sortear</TextBlock>
+                    </StackPanel>
+                </Button>
+            </Grid>
         </Grid>
 
     </Grid>

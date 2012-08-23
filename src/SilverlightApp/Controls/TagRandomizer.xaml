@@ -47,13 +47,13 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <Ellipse Stretch="Fill"
-                                     Fill="#FF680000" />
+                                     Fill="Black" />
                             <TextBlock TextAlignment="Left"
                                        FontFamily="Segoe UI"
-                                       FontSize="18"
+                                       FontSize="15"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Center">
-                                    <Run Text="go,"
+                                    <Run Text=" go,"
                                          Foreground="#FFFFFFFF" /><Run Text=" " /><LineBreak /><Run Text=" " /><Run Text="Baby,"
                                                                                                                     Foreground="#FFFFFFFF" /><Run Text=" " /><LineBreak /><Run Text=" " /><Run Text="  Go!"
                                                                                                                                                                                                Foreground="#FFFFFFFF" /></TextBlock>
@@ -66,24 +66,29 @@
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="120" />
+            <RowDefinition Height="70" />
         </Grid.RowDefinitions>
 
         <Image Source="Assets/Images/Background.png" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Opacity="0.15" Width="800" Height="800" Margin="0,0,-50,-75"/>
 
-        <Controls:TagCloud x:Name="Cloud" Width="800" Height="450"
-                           Grid.RowSpan="2">
-        </Controls:TagCloud>
+        <Viewbox Grid.Row="0" Margin="5">
+            <Controls:TagCloud x:Name="Cloud" Width="570" Height="400">
+            </Controls:TagCloud>
+        </Viewbox>
 
-        <Button Grid.Row="1"
+        <Grid
+            Grid.Row="1">
+            <Border BorderThickness="0,1,0,0" BorderBrush="DarkGray" Margin="20,0"></Border>
+            <Button
                 Content="Go"
                 Name="Go"
-                Margin="20,20"
-                HorizontalAlignment="Left"
+                Margin="10,0"
+                HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Width="80"
-                Height="80"
+                Width="60"
+                Height="60"
                 Style="{StaticResource GoBabyStyle}"
                 Click="Go_Click" />
+        </Grid>
     </Grid>
 </UserControl>

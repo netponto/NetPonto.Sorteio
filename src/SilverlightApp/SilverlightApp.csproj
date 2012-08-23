@@ -182,6 +182,13 @@
   <ItemGroup>
     <None Include="Properties\InBrowserSettings.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Images\Next.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Images\Open.png" />
+    <Resource Include="Assets\Images\Previous.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
