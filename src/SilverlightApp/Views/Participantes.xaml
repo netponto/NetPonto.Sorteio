@@ -30,8 +30,9 @@
                  Grid.Row="0"
                  Grid.RowSpan="2"
                  Margin="20,5" 
-                 FontSize="20"
-                 SizeChanged="ParticipantsList_SizeChanged">
+                 FontSize="12"
+                 SizeChanged="ParticipantsList_SizeChanged"
+                 >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
