@@ -94,7 +94,7 @@ namespace SilverlightApp.Views
                     // validate that the participant is filled in
                     if (!string.IsNullOrWhiteSpace(participant)){
                       var x = participant.Split(':');
-                      participant = x[1];
+                      participant = x[2];
                         ParticipantsList.Items.Add(participant.Trim());
                       }
                 }
