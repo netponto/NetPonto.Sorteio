@@ -31,7 +31,7 @@
                  Grid.RowSpan="2"
                  Margin="20,5" 
                  FontSize="12"
-                 SizeChanged="ParticipantsList_SizeChanged"
+                 
                  >
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -43,13 +43,13 @@
                                 CommandParameter="{Binding}">
                             <Image Source="/SilverlightApp;component/Assets/Images/Delete.png" />
                         </Button>
-                        <TextBlock Margin="10,0,0,0" Text="{Binding}" />
+                        <TextBlock Margin="20,0,0,0" Text="{Binding}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <toolkit:WrapPanel Orientation="Vertical"/>
+                    <toolkit:WrapPanel Orientation="Vertical" MaxHeight="400"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
