@@ -92,11 +92,8 @@ namespace SilverlightApp.Views
                 while ((participant = reader.ReadLine()) != null)
                 {
                     // validate that the participant is filled in
-                    if (!string.IsNullOrWhiteSpace(participant)){
-                      var x = participant.Split(':');
-                      participant = x[2];
+                    if (!string.IsNullOrWhiteSpace(participant))
                         ParticipantsList.Items.Add(participant.Trim());
-                      }
                 }
             }
         }
