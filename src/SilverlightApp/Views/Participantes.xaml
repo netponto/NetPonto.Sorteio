@@ -31,7 +31,7 @@
                  Grid.RowSpan="2"
                  Margin="20,5" 
                  FontSize="12"
-                 
+                 SizeChanged="ParticipantsList_SizeChanged"
                  >
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -49,7 +49,7 @@
             </ListBox.ItemTemplate>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <toolkit:WrapPanel Orientation="Vertical" MaxHeight="400"/>
+                    <toolkit:WrapPanel Orientation="Vertical"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
