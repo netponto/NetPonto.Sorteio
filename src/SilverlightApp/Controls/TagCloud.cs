@@ -19,6 +19,8 @@ namespace SilverlightApp.Controls
 
         public TagItem TopItem;
 
+        public event EventHandler WinnerFound;
+
         public TagCloud()
         {
             Loaded += TagCloud_Loaded;
@@ -87,6 +89,7 @@ namespace SilverlightApp.Controls
                 if (TopItem != null)
                 {
                     TopItem.SetAsWinner();
+                    WinnerFound(null, null);
                 }
             }
         }

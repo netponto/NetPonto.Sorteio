@@ -30,6 +30,7 @@ namespace SilverlightApp.Controls
 
             _timer = new DispatcherTimer();
             _timer.Tick += Timer_Tick;
+            Cloud.WinnerFound += Cloud_WinnerFound;
         }
         #endregion
 
@@ -58,6 +59,8 @@ namespace SilverlightApp.Controls
 
         private void Go_Click(object sender, RoutedEventArgs e)
         {
+            Go.IsEnabled = false;
+
             var selectedTag = Cloud.TopItem;
             if (selectedTag != null)
             {
@@ -66,6 +69,11 @@ namespace SilverlightApp.Controls
 
             Cloud.SetTags(_members.ToArray());
             RandomMembers();
+        }
+
+        private void Cloud_WinnerFound(object sender, EventArgs e)
+        {
+            Go.IsEnabled = true;
         }
         #endregion
     }
