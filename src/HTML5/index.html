@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>NetPonto - Sorteio</title>
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.css" rel="stylesheet">
+        <style>
+            .alert{
+                padding: 5px;
+                margin-bottom: 5px;
+            }
+            .alert-dismissible .close{
+                right: -2px;
+            }
+            img{
+                width: 45%;
+                margin-bottom: 10px;
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="images/logo.png" alt="NetPonto Sorteio" title="NetPonto Sorteio" class="img-responsive"/>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h1>
+                        <button type="button" id="addUser" class="btn btn-info"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+                        <button type="button" id="start" class="btn btn-primary">Start</button>
+                    </h1>   
+                </div>
+            </div>
+            <div class="text-center" id="initial">
+                <!-- List -->
+                <div class="" id="listContainer">
+                    <div class="row">
+                        <ul class="list-inline" id="listItems">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-info text-center" id="cloudTags">
+                <!-- Canvas -->
+                <div class="row hidden" id="canvasContainer">
+                    <canvas id="canvas" width="960" height="500">
+                        <p>Your browser does not support HTML 5 Canvas</p>
+                    </canvas>
+                </div>
+
+            </div>
+            <div id="tags" class="hidden"></div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="winnersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                        <h1 class="text-center"><strong><span id="winnerName"></span></strong></h1>
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+        <script src="js/tagcanvas.min.js" type="text/javascript"></script>
+        <script src="js/bootstrap.js" type="text/javascript"></script>
+        <script type="text/javascript">
+
+            window.onerror = function (errorMsg, url, lineNumber) {
+                alert('Error: ' + errorMsg + '\n\nScript: ' + url + '\nLine: ' + lineNumber);
+            };
+
+            var canRoll = true;
+            var o = {
+                textFont: 'Arial, Helvetica, sans-serif',
+                maxSpeed: 0.05,
+                minSpeed: 0.01,
+                textColour: '#039',
+                textHeight: 25,
+                outlineMethod: 'colour',
+                fadeIn: 800,
+                outlineColour: '#900',
+                outlineOffset: 0,
+                depth: 0.97,
+                minBrightness: 0.2,
+                wheelZoom: false,
+                reverse: true,
+                shadowBlur: 2,
+                shuffleTags: true,
+                shadowOffset: [1, 1],
+                stretchX: 1.7,
+                initial: [0, 0.1],
+                clickToFront: 600,
+                noMouse: true
+            };
+
+            $(function () {
+                // Load all people
+                $.get("data/data.json", function (response) {
+                    response.data.sort();
+                    for (var i = 0; i < response.data.length; i++) {
+                        addUser(response.data[i]);
+                    }
+                });
+                $("#roll").on("click", function () {
+                    RollIt();
+                });
+            });
+
+            $("#addUser").on("click", function () {
+                var name = window.prompt('Nome?');
+                if (name === "" || name === null) {
+                    return;
+                }
+                addUser(name);
+            });
+
+            $("#start").on("click", function () {
+                console.log("start");
+
+                $("#listItems .name").each(function () {
+                    $("#tags").append("<a href='javascript:void(0);'>" + $(this).text() + "</a>");
+                });
+
+//                $("#start").remove();
+                $("#addUser").parent().text("7º Evento no Porto - ISEP");
+//                $("#addUser").remove();
+                $("#initial").addClass('hide');
+                $("#canvasContainer").removeClass('hidden');
+
+                StartCloudTags();
+            });
+
+            function addUser(name) {
+                var str = "<li><div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong class='name'>" + name + "</strong></div></li>";
+                $("#listItems").append(str);
+            }
+
+            function StartCloudTags() {
+                var s = (new Date).getTime() / 360;
+                o.initial[0] = 0.2 * Math.cos(s);
+                o.initial[1] = 0.2 * Math.sin(s);
+                TagCanvas.Start('canvas', 'tags', o);
+            }
+
+            function RollIt() {
+                // Check if modal is open
+                var isOpen = $("#winnersModal").hasClass('in');
+
+                if (isOpen)
+                    $("#winnersModal").modal('toggle');
+
+                canRoll = false;
+                GetItem(Math.floor(getRandomArbitrary(5, 10)));
+            }
+
+            function GetItem(index) {
+                console.log("GetItem", index);
+                if (index === 0) {
+                    console.log("TagToFront"),
+                            TagToFront();
+                    return;
+                }
+
+                --index;
+
+                var ms = getRandomArbitrary(500, 1500);
+                //console.log("random time", ms);
+                setTimeout(function () {
+                    //console.log("Rotate");
+                    Rotate();
+                    GetItem(index);
+                }, ms);
+            }
+
+            function getRandomArbitrary(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            function Rotate() {
+                TagCanvas.RotateTag('canvas', {
+                    index: Math.floor(Math.random() * 20), lat: -60, lng: -60, time: 800, active: 1
+                });
+            }
+
+            function TagToFront() {
+                TagCanvas.TagToFront('canvas', {
+                    index: Math.floor(Math.random() * $("#tags").children().length),
+                    active: 1,
+                    callback: result
+                });
+            }
+
+            function result(e, item) {
+                var value = item.text_original;
+                $("#tags").children('a').each(function () {
+
+                    if (value === this.text) {
+                        $(this).remove();
+                        $("#winnerName").text(value);
+                        $("#winnersModal").modal('toggle');
+                        setTimeout(function () {
+                            TagCanvas.Update('canvas');
+                            canRoll = true;
+                        }, 1000);
+                    }
+                });
+            }
+
+            $(document).keydown(function (e) {
+                switch (e.which) {
+                    case 72: // h
+                        if (canRoll) {
+                            RollIt();
+                        }
+                        break;
+                    default:
+                        return; // exit this handler for other keys
+                }
+                e.preventDefault(); // prevent the default action (scroll / move caret)
+            });
+        </script>
+    </body>
+</html>
