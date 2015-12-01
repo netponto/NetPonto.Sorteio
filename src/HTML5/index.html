@@ -15,12 +15,12 @@
             .alert-dismissible .close {
                 right: -2px;
             }
-
-            img {
+            #logo{
                 width: 45%;
                 margin-bottom: 10px;
                 margin-top: 10px;
             }
+
         </style>
     </head>
 
@@ -28,7 +28,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
-                    <img src="images/logo.png" alt="NetPonto Sorteio" title="NetPonto Sorteio" class="img-responsive" />
+                    <img src="images/logo.png" id="logo" alt="NetPonto Sorteio" title="NetPonto Sorteio" class="img-responsive" />
                 </div>
                 <div class="col-md-6 text-right">
                     <h1>
@@ -68,8 +68,9 @@
                     </div>
                     <div class="modal-body">
                         <h1 class="text-center"><strong><span id="winnerName"></span></strong></h1>
+                        <p>&nbsp;</p>
                         <div class="text-center">
-                            <img src="" alt="" id="winnerPrizeImg" class="img-rounded" />
+                            <img src="" alt="" id="winnerPrizeImg" />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -88,6 +89,8 @@
             };
 
             var canRoll = false;
+            var _prize = null;
+
             var o = {
                 textFont: 'Arial, Helvetica, sans-serif',
                 maxSpeed: 0.05,
@@ -154,7 +157,7 @@
                     $("#tags").append("<a href='javascript:void(0);'>" + $(this).text() + "</a>");
                 });
 
-                $("#addUser").parent().text("8º Evento no Porto - Mindera");
+                $("#addUser").parent().text(app.Meeting.toString());
                 $("#initial").addClass('hide');
                 $("#canvasContainer").removeClass('hidden');
 
@@ -172,6 +175,11 @@
                 o.initial[0] = 0.2 * Math.cos(s);
                 o.initial[1] = 0.2 * Math.sin(s);
                 TagCanvas.Start('canvas', 'tags', o);
+            }
+
+            function RollItAgain() {
+                app.addPrizeBack(_prize);
+                RollIt();
             }
 
             function RollIt() {
@@ -233,16 +241,15 @@
 
                         $(this).remove();
 
-                        var prize = app.getPrize();
-                        if (prize !== null) {
-                            console.log(prize);
-                            $("#winnerPrizeImg").attr("src", prize.image);
-                            $("#winnerPrizeImg").attr("alt", prize.name);
-                            $("#winnerPrizeImg").attr("title", prize.name);
-                        }
+                        _prize = app.getPrize();
+
+                        $("#winnerPrizeImg").attr("src", _prize.image);
+                        $("#winnerPrizeImg").attr("alt", _prize.name);
+                        $("#winnerPrizeImg").attr("title", _prize.name);
 
                         $("#winnerName").text(value);
                         $("#winnersModal").modal('toggle');
+
                         setTimeout(function () {
                             TagCanvas.Update('canvas');
                             canRoll = true;
@@ -255,7 +262,9 @@
                 switch (e.which) {
                     case 65: // a
                         // roll again
-
+                        if (canRoll) {
+                            RollItAgain();
+                        }
                     case 78: // n
                         break;
                     case 72: // h
