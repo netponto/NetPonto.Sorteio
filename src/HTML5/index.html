@@ -1,36 +1,40 @@
 <!DOCTYPE html>
 <html>
+
     <head>
         <meta charset="utf-8">
         <title>NetPonto - Sorteio</title>
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
-        <style>
-            .alert{
+        <style>          
+            .alert {
                 padding: 5px;
                 margin-bottom: 5px;
             }
-            .alert-dismissible .close{
+
+            .alert-dismissible .close {
                 right: -2px;
             }
-            img{
+
+            img {
                 width: 45%;
                 margin-bottom: 10px;
                 margin-top: 10px;
             }
         </style>
     </head>
+
     <body>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
-                    <img src="images/logo.png" alt="NetPonto Sorteio" title="NetPonto Sorteio" class="img-responsive"/>
+                    <img src="images/logo.png" alt="NetPonto Sorteio" title="NetPonto Sorteio" class="img-responsive" />
                 </div>
                 <div class="col-md-6 text-right">
                     <h1>
                         <button type="button" id="addUser" class="btn btn-info"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
                         <button type="button" id="start" class="btn btn-primary">Start</button>
-                    </h1>   
+                    </h1>
                 </div>
             </div>
             <div class="text-center" id="initial">
@@ -63,11 +67,10 @@
                         <h4 class="modal-title" id="myModalLabel">&nbsp;</h4>
                     </div>
                     <div class="modal-body">
-                        <p>&nbsp;</p>
-                        <p>&nbsp;</p>
                         <h1 class="text-center"><strong><span id="winnerName"></span></strong></h1>
-                        <p>&nbsp;</p>
-                        <p>&nbsp;</p>
+                        <div class="text-center">
+                            <img src="" alt="" id="winnerPrizeImg" class="img-rounded" />
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
@@ -78,13 +81,13 @@
         <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
         <script src="js/tagcanvas.min.js" type="text/javascript"></script>
         <script src="js/bootstrap.js" type="text/javascript"></script>
+        <script src="js/app.js" type="text/javascript"></script>
         <script type="text/javascript">
-
             window.onerror = function (errorMsg, url, lineNumber) {
                 alert('Error: ' + errorMsg + '\n\nScript: ' + url + '\nLine: ' + lineNumber);
             };
 
-            var canRoll = true;
+            var canRoll = false;
             var o = {
                 textFont: 'Arial, Helvetica, sans-serif',
                 maxSpeed: 0.05,
@@ -109,17 +112,32 @@
             };
 
             $(function () {
-                // Load all people
-                $.get("data/data.json", function (response) {
-                    response.data.sort();
-                    for (var i = 0; i < response.data.length; i++) {
-                        addUser(response.data[i]);
+
+                $.get("config.json", function (response) {
+
+                    if (app === null || typeof (app) === "undefined")
+                    {
+                        throw new Error("Missing app.js");
                     }
+
+                    app.setConfig(response);
+                    app.loadData(dataLoaded);
                 });
+
+
+
+            });
+
+            function dataLoaded() {
+
+                for (var i = 0; i < app.Users.length; i++) {
+                    addUser(app.Users[i]);
+                }
+
                 $("#roll").on("click", function () {
                     RollIt();
                 });
-            });
+            }
 
             $("#addUser").on("click", function () {
                 var name = window.prompt('Nome?');
@@ -136,13 +154,12 @@
                     $("#tags").append("<a href='javascript:void(0);'>" + $(this).text() + "</a>");
                 });
 
-//                $("#start").remove();
-                $("#addUser").parent().text("7º Evento no Porto - ISEP");
-//                $("#addUser").remove();
+                $("#addUser").parent().text("8º Evento no Porto - Mindera");
                 $("#initial").addClass('hide');
                 $("#canvasContainer").removeClass('hidden');
 
                 StartCloudTags();
+                canRoll = true;
             });
 
             function addUser(name) {
@@ -161,8 +178,9 @@
                 // Check if modal is open
                 var isOpen = $("#winnersModal").hasClass('in');
 
-                if (isOpen)
+                if (isOpen) {
                     $("#winnersModal").modal('toggle');
+                }
 
                 canRoll = false;
                 GetItem(Math.floor(getRandomArbitrary(5, 10)));
@@ -170,18 +188,18 @@
 
             function GetItem(index) {
                 console.log("GetItem", index);
+
                 if (index === 0) {
-                    console.log("TagToFront"),
-                            TagToFront();
+                    console.log("TagToFront");
+                    TagToFront();
                     return;
                 }
 
                 --index;
 
                 var ms = getRandomArbitrary(500, 1500);
-                //console.log("random time", ms);
+
                 setTimeout(function () {
-                    //console.log("Rotate");
                     Rotate();
                     GetItem(index);
                 }, ms);
@@ -206,11 +224,23 @@
             }
 
             function result(e, item) {
+
                 var value = item.text_original;
+
                 $("#tags").children('a').each(function () {
 
                     if (value === this.text) {
+
                         $(this).remove();
+
+                        var prize = app.getPrize();
+                        if (prize !== null) {
+                            console.log(prize);
+                            $("#winnerPrizeImg").attr("src", prize.image);
+                            $("#winnerPrizeImg").attr("alt", prize.name);
+                            $("#winnerPrizeImg").attr("title", prize.name);
+                        }
+
                         $("#winnerName").text(value);
                         $("#winnersModal").modal('toggle');
                         setTimeout(function () {
@@ -223,6 +253,11 @@
 
             $(document).keydown(function (e) {
                 switch (e.which) {
+                    case 65: // a
+                        // roll again
+
+                    case 78: // n
+                        break;
                     case 72: // h
                         if (canRoll) {
                             RollIt();
@@ -235,4 +270,5 @@
             });
         </script>
     </body>
+
 </html>
