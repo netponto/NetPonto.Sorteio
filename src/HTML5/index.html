@@ -14,44 +14,74 @@
                 right: -2px;
             }
             img{
-                width: 45%;
+                width: 35%;
                 margin-bottom: 10px;
                 margin-top: 10px;
             }
+            .attendee {
+                display: inline;
+            }
+
         </style>
     </head>
     <body>
+
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
                     <img src="images/logo.png" alt="NetPonto Sorteio" title="NetPonto Sorteio" class="img-responsive"/>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h1>
-                        <button type="button" id="addUser" class="btn btn-info"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-                        <button type="button" id="start" class="btn btn-primary">Start</button>
+                    <h1 data-bind="text:title">
+
                     </h1>   
                 </div>
             </div>
-            <div class="text-center" id="initial">
-                <!-- List -->
-                <div class="" id="listContainer">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href="#tab-config" aria-controls="home" role="tab" data-toggle="tab">Config</a></li>
+                <li role="presentation" class="active"><a href="#tab-presencas" aria-controls="home" role="tab" data-toggle="tab">Presenças</a></li>
+                <li role="presentation"><a href="#tab-sorteio" aria-controls="profile" role="tab" data-toggle="tab">Sorteio</a></li>
+              </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane" id="tab-config">
+                    Title:<input type="text" data-bind="textInput:title" style="width:100%"></input>
+                </div>
+                <div role="tabpanel" class="tab-pane active" id="tab-presencas">
                     <div class="row">
-                        <ul class="list-inline" id="listItems">
-                        </ul>
+                        <input type="file" data-bind="event: { change: function() { load_file($element.files[0]) } }"/>
+
+                        <button type="button" class="btn btn-info" data-bind="click:add_attendee"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-danger" data-bind="click:clear_attendees"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+
+                    </div>
+                    <div class="text-center" id="initial">
+                        <!-- List -->
+                        <div class="" id="listContainer">
+                            <div class="row">
+                                <ul class="list-inline" id="listItems" data-bind="template: { name: 'template-attendee', foreach: attendees }">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+                <div role="tabpanel" class="tab-pane" id="tab-sorteio">
+                    <button type="button" id="start" class="btn btn-primary">Start</button>
+                    <div class="bg-info text-center" id="cloudTags">
+                        <!-- Canvas -->
+                        <div class="row" id="canvasContainer">
+                            <canvas id="canvas" width="960" height="500">
+                                <p>Your browser does not support HTML 5 Canvas</p>
+                            </canvas>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="bg-info text-center" id="cloudTags">
-                <!-- Canvas -->
-                <div class="row hidden" id="canvasContainer">
-                    <canvas id="canvas" width="960" height="500">
-                        <p>Your browser does not support HTML 5 Canvas</p>
-                    </canvas>
-                </div>
 
+            <div id="tags" class="hidden" data-bind="foreach:attendees">
+                <a href='javascript:void(0);' data-bind="text:name"></a>
             </div>
-            <div id="tags" class="hidden"></div>
         </div>
 
         <!-- Modal -->
@@ -75,10 +105,71 @@
                 </div>
             </div>
         </div>
+
+        <script type="text/html" id="template-attendee">
+            <li class='alert alert-success alert-dismissible'>
+                <button type='button' class='close' data-bind="click: $parent.remove_attendee">
+                    <span>&times;</span>
+                </button>
+                <strong class='name' data-bind="text:name"></strong>
+            </li>
+        </script>
+
         <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
         <script src="js/tagcanvas.min.js" type="text/javascript"></script>
         <script src="js/bootstrap.js" type="text/javascript"></script>
+        <script src="js/knockout-3.4.0.js" type="text/javascript"></script>
         <script type="text/javascript">
+
+            var Attendee = function(data){
+                var self = this;
+                self.name = data.name;
+            }
+
+            var PageViewModel = function(){
+                var self = this;
+
+                self.title = ko.observable("Xº Reunião NetPonto - Y");
+                self.attendees = ko.observableArray([]);
+                self.winners = ko.observableArray([]);
+                self.prizes = ko.observableArray([]);
+
+                self.load_file = function(selected_file){
+                    window.netponto_ns.selected_file = selected_file;
+                    var reader = new FileReader();
+                    reader.addEventListener("loadend", function(){
+                        var attendees = reader.result.split("\n").forEach(function(line){
+                            var name = line.trim();
+                            if (name == "") return;
+                            var attendee = new Attendee({name:line.trim()});
+                            self.attendees.push(attendee);
+                        });
+                        console.log("loaded attendees");
+                    });
+                    reader.readAsText(selected_file);
+                };
+
+                self.add_attendee = function(){
+                    var name = window.prompt('Nome?');
+                    if (name === "" || name === null) {
+                        return;
+                    }
+                    self.attendees.push(new Attendee({name:name.trim()}));
+                };
+                self.remove_attendee = function(attendee){
+                    self.attendees.remove(attendee);
+                };
+                self.clear_attendees = function(){
+                    self.attendees.removeAll();
+                };
+
+            }
+
+            $(function(){
+                var vm = new PageViewModel();
+                ko.applyBindings(vm);
+                window.netponto_ns = {vm:vm}
+            });
 
             window.onerror = function (errorMsg, url, lineNumber) {
                 alert('Error: ' + errorMsg + '\n\nScript: ' + url + '\nLine: ' + lineNumber);
@@ -110,45 +201,20 @@
 
             $(function () {
                 // Load all people
-                $.get("data/data.json", function (response) {
-                    response.data.sort();
-                    for (var i = 0; i < response.data.length; i++) {
-                        addUser(response.data[i]);
-                    }
-                });
+
                 $("#roll").on("click", function () {
                     RollIt();
                 });
             });
 
-            $("#addUser").on("click", function () {
-                var name = window.prompt('Nome?');
-                if (name === "" || name === null) {
-                    return;
-                }
-                addUser(name);
-            });
+         
 
             $("#start").on("click", function () {
                 console.log("start");
 
-                $("#listItems .name").each(function () {
-                    $("#tags").append("<a href='javascript:void(0);'>" + $(this).text() + "</a>");
-                });
-
-//                $("#start").remove();
-                $("#addUser").parent().text("7º Evento no Porto - ISEP");
-//                $("#addUser").remove();
-                $("#initial").addClass('hide');
-                $("#canvasContainer").removeClass('hidden');
-
                 StartCloudTags();
             });
 
-            function addUser(name) {
-                var str = "<li><div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong class='name'>" + name + "</strong></div></li>";
-                $("#listItems").append(str);
-            }
 
             function StartCloudTags() {
                 var s = (new Date).getTime() / 360;
