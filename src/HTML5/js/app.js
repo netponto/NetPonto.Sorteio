@@ -1,35 +1,170 @@
-var app = {
-    Prizes: [],
-    Meeting: {
-        Name: "",
-        Local: "",
-        toString: function () {
-            return this.Name + " - " + this.Local;
-        }
-    },
-    Users: [],
-    setConfig: function (response) {
-        this.Meeting.Name = response.event.name;
-        this.Meeting.Local = response.event.local;
+var Attendee = function(data) {
+    var self = this;
+    self.name = data.name;
+};
 
-        this.Prizes = response.prizes.slice();
-    },
-    loadData: function (callback) {
-        // Load all people
+var PageViewModel = function() {
+    var self = this;
 
-        // TODO replace this string in config.json key
-        $.get("data/data.json", function (response) {
+    self.title = ko.observable("Xº Reunião NetPonto - Y");
+    self.attendees = ko.observableArray([]);
+    self.winners = ko.observableArray([]);
+    self.prizes = ko.observableArray([]);
+    self.started = ko.observable(false);
 
-            response.data.sort();
-            app.Users = response.data.slice();
+    self.load_file = function(selected_file) {
 
-            callback();
+        window.netponto_ns.selected_file = selected_file;
+
+        var reader = new FileReader();
+
+        reader.addEventListener("loadend", function() {
+            var attendees = reader.result.split("\n").forEach(function(line) {
+                var name = line.trim();
+                if (name === "")
+                    return;
+                var attendee = new Attendee({
+                    name: line.trim()
+                });
+                self.attendees.push(attendee);
+            });
         });
-    },
-    getPrize: function () {
-        return this.Prizes.pop();
-    },
-    addPrizeBack: function (prize) {
-        this.Prizes.push(prize);
+
+        if (typeof (selected_file) !== "undefined" && selected_file !== null) {
+            reader.readAsText(selected_file);
+        }
+    };
+
+    self.add_attendee = function() {
+        var name = window.prompt('Nome?');
+        if (name === "" || name === null) {
+            return;
+        }
+        self.attendees.push(new Attendee({ name: name.trim() }));
+    };
+
+    self.remove_attendee = function(attendee) {
+        self.attendees.remove(attendee);
+    };
+
+    self.clear_attendees = function() {
+        if (window.confirm('Tem a certeza que pretende limpar a lista?')) {
+            self.attendees.removeAll();
+        }
+    };
+
+    self.start = function() {
+        self.started(true);
+        StartCloudTags();
     }
 };
+
+window.onerror = function(errorMsg, url, lineNumber) {
+    // for unexpected errors only
+    alert('Error: ' + errorMsg + '\n\nScript: ' + url + '\nLine: ' + lineNumber);
+};
+
+var canRoll = true;
+var o = {
+    textFont: 'Arial, Helvetica, sans-serif',
+    maxSpeed: 0.05,
+    minSpeed: 0.01,
+    textColour: '#039',
+    textHeight: 25,
+    outlineMethod: 'colour',
+    fadeIn: 800,
+    outlineColour: '#900',
+    outlineOffset: 0,
+    depth: 0.97,
+    minBrightness: 0.2,
+    wheelZoom: false,
+    reverse: true,
+    shadowBlur: 2,
+    shuffleTags: true,
+    shadowOffset: [1, 1],
+    stretchX: 1.7,
+    initial: [0, 0.1],
+    clickToFront: 600,
+    noMouse: true
+};
+
+function StartCloudTags() {
+    var s = (new Date).getTime() / 360;
+    o.initial[0] = 0.2 * Math.cos(s);
+    o.initial[1] = 0.2 * Math.sin(s);
+    TagCanvas.Start('canvas', 'tags', o);
+}
+
+function RollIt() {
+    // Check if modal is open
+    var isOpen = $("#winnersModal").hasClass('in');
+
+    if (isOpen)
+        $("#winnersModal").modal('toggle');
+
+    canRoll = false;
+    GetItem(Math.floor(getRandomArbitrary(5, 10)));
+}
+
+function GetItem(index) {
+    if (index === 0) {
+        console.log("TagToFront"),
+            TagToFront();
+        return;
+    }
+
+    --index;
+
+    var ms = getRandomArbitrary(500, 1500);
+    setTimeout(function() {
+        Rotate();
+        GetItem(index);
+    }, ms);
+}
+
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function Rotate() {
+    TagCanvas.RotateTag('canvas', {
+        index: Math.floor(Math.random() * 20), lat: -60, lng: -60, time: 800, active: 1
+    });
+}
+
+function TagToFront() {
+    TagCanvas.TagToFront('canvas', {
+        index: Math.floor(Math.random() * $("#tags").children().length),
+        active: 1,
+        callback: result
+    });
+}
+
+function result(e, item) {
+    var value = item.text_original;
+    $("#tags").children('a').each(function() {
+        if (value === this.text) {
+            $(this).remove();
+            $("#winnerName").text(value);
+            $("#winnersModal").modal('toggle');
+            viewModel.winners.push(value);
+            setTimeout(function() {
+                TagCanvas.Update('canvas');
+                canRoll = true;
+            }, 1000);
+        }
+    });
+}
+
+$(document).keydown(function(e) {
+    switch (e.which) {
+        case 72: // h
+            if (canRoll) {
+                RollIt();
+            }
+            break;
+        default:
+            return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+});

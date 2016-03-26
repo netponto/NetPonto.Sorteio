@@ -1,304 +1,169 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>NetPonto - Sorteio</title>
-        <!-- Bootstrap core CSS -->
-        <link href="css/bootstrap.css" rel="stylesheet">
-        <style>
-            .alert{
-                padding: 5px;
-                margin-bottom: 5px;
-            }
-            .alert-dismissible .close{
-                right: -2px;
-            }
-            img{
-                width: 35%;
-                margin-bottom: 10px;
-                margin-top: 10px;
-            }
-            .attendee {
-                display: inline;
-            }
 
-        </style>
-    </head>
-    <body>
+<head>
+    <meta charset="utf-8">
+    <title>NetPonto - Sorteio</title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+</head>
 
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-6">
-                    <img src="images/logo.png" alt="NetPonto Sorteio" title="NetPonto Sorteio" class="img-responsive"/>
-                </div>
-                <div class="col-md-6 text-right">
-                    <h1 data-bind="text:title">
-
-                    </h1>   
-                </div>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="images/logo.png" alt="NetPonto Sorteio" title="NetPonto Sorteio" class="img-responsive" />
             </div>
-              <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation"><a href="#tab-config" aria-controls="home" role="tab" data-toggle="tab">Config</a></li>
-                <li role="presentation" class="active"><a href="#tab-presencas" aria-controls="home" role="tab" data-toggle="tab">Presenças</a></li>
-                <li role="presentation"><a href="#tab-sorteio" aria-controls="profile" role="tab" data-toggle="tab">Sorteio</a></li>
-              </ul>
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane" id="tab-config">
-                    Title:<input type="text" data-bind="textInput:title" style="width:100%"></input>
-                </div>
-                <div role="tabpanel" class="tab-pane active" id="tab-presencas">
-                    <div class="row">
-                        <input type="file" data-bind="event: { change: function() { load_file($element.files[0]) } }"/>
+            <div class="col-md-6 text-right">
+                <h1 data-bind="text:title"></h1>
+            </div>
+        </div>
 
+        <!-- Tab list -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation"><a href="#tab-config" aria-controls="home" role="tab" data-toggle="tab">Config</a></li>
+            <li role="presentation" class="active"><a href="#tab-presencas" aria-controls="home" role="tab" data-toggle="tab">Presenças</a></li>
+            <li role="presentation"><a href="#tab-sorteio" aria-controls="profile" role="tab" data-toggle="tab">Sorteio</a></li>
+            <li role="presentation" data-bind="visible: started"><a href="#tab-winners" aria-controls="profile" role="tab" data-toggle="tab">Vencedores</a></li>
+        </ul>
+
+        <!-- Tab list content -->
+        <div class="tab-content">
+
+            <!-- Config tab -->
+            <div role="tabpanel" class="tab-pane fade" id="tab-config">
+                <div class="form-group">
+                    <label for="title">Título:</label>
+                    <input type="email" class="form-control" id="title" data-bind="textInput:title" placeholder="Título">
+                </div>
+                <hr />
+                <h3>Como funciona?</h2>
+                <p>Carregue os participantes por ficheiro e/ou manualmente através dos botões disponibilizados na <code>tab</code> "<mark>Presenças</mark>".</p>
+                <p>Após os participantes estarem carregados, na <code>tab</code> "<mark>Sorteio</mark>" poderá dar inicio ao sorteio, carregando no botão "<mark>Start</mark>".</p>
+                <h3>Como sortear participantes?</h3>
+                <p>Com a tecla <code>h</code> poderá fazer sair o próximo. Nota que, apenas quando sai um, é que poderá fazer
+                    sair o seguinte.</p>
+                <h3>Vencedores?</h3>
+                <p>Após dar inicio ao sorteio, uma nova <code>tab</code> irá aparecer com o nome "<mark>Vencedores</mark>". Aí, por cada vez que sair um premiado, o seu nome irá aparecer numa lista.</p>
+            </div>
+
+            <!-- Attendees tab -->
+            <div role="tabpanel" class="tab-pane active fade in" id="tab-presencas">
+                <div class="row-fluid">
+                    <div class="col-xs-4 col-md-4">
+                        <div class="form-group">
+                            <label for="fileInput">Carregar lista de participantes</label>
+                            <input type="file" data-bind="event: { change: function() { load_file($element.files[0]) } }" id="fileInput">
+                            <p class="help-block">Ficheiro de texto simples com um nome por linha.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-8 col-md-8 text-right">
                         <button type="button" class="btn btn-info" data-bind="click:add_attendee"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
                         <button type="button" class="btn btn-danger" data-bind="click:clear_attendees"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
 
                     </div>
-                    <div class="text-center" id="initial">
-                        <!-- List -->
-                        <div class="" id="listContainer">
-                            <div class="row">
-                                <ul class="list-inline" id="listItems" data-bind="template: { name: 'template-attendee', foreach: attendees }">
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                
                 </div>
-                <div role="tabpanel" class="tab-pane" id="tab-sorteio">
-                    <button type="button" id="start" class="btn btn-primary">Start</button>
-                    <div class="bg-info text-center" id="cloudTags">
-                        <!-- Canvas -->
-                        <div class="row" id="canvasContainer">
-                            <canvas id="canvas" width="960" height="500">
-                                <p>Your browser does not support HTML 5 Canvas</p>
-                            </canvas>
+                <div class="clearfix"></div>
+                <div class="row-fluid text-center" id="initial">
+                    <!-- List -->
+                    <div class="container-fluid" id="listContainer">
+                        <div class="row">
+                            <ul class="list-inline" id="listItems" data-bind="template: { name: 'template-attendee', foreach: attendees }">
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="tags" class="hidden" data-bind="foreach:attendees">
-                <a href='javascript:void(0);' data-bind="text:name"></a>
-            </div>
-        </div>
+            <!-- Giveaway tab -->
+            <div role="tabpanel" class="tab-pane fade" id="tab-sorteio">
 
-        <!-- Modal -->
-        <div class="modal fade" id="winnersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">&nbsp;</h4>
+                <div class="row" data-bind="ifnot: started">
+                    <p>&nbsp;</p>
+                    <div class="col-md-4 col-lg-4">&nbsp;</div>
+                    <div class="col-md-4 col-lg-4">
+                        <div class="center-block">
+                            <button type="button" id="start" data-bind="click: start" class="btn btn-lg btn-block btn-primary">Start</button>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <p>&nbsp;</p>
-                        <p>&nbsp;</p>
-                        <h1 class="text-center"><strong><span id="winnerName"></span></strong></h1>
-                        <p>&nbsp;</p>
-                        <p>&nbsp;</p>
+                    <div class="col-md-4 col-lg-4">&nbsp;</div>
+                </div>
+                <div class="bg-info text-center" id="cloudTags" data-bind="visible: started">
+                    <!-- Canvas -->
+                    <div class="row" id="canvasContainer">
+                        <canvas id="canvas" width="960" height="500">
+                            <p>Your browser does not support HTML 5 Canvas</p>
+                        </canvas>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+
+            <!-- Winners tab -->
+            <div role="tabpanel" class="tab-pane fade" id="tab-winners" data-bind="visible: started">
+                <div class="row-fluid">
+                    <div class="col-md-4 col-lg-4">
+                        <ul class="list-group" data-bind="foreach: winners">
+                            <li class="list-group-item" data-bind="text: $data"></li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script type="text/html" id="template-attendee">
-            <li class='alert alert-success alert-dismissible'>
-                <button type='button' class='close' data-bind="click: $parent.remove_attendee">
-                    <span>&times;</span>
-                </button>
-                <strong class='name' data-bind="text:name"></strong>
-            </li>
-        </script>
+        <div id="tags" class="hidden" data-bind="foreach:attendees">
+            <a href='javascript:void(0);' data-bind="text:name"></a>
+        </div>
+    </div>
 
-        <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
-        <script src="js/tagcanvas.min.js" type="text/javascript"></script>
-        <script src="js/bootstrap.js" type="text/javascript"></script>
-        <script src="js/knockout-3.4.0.js" type="text/javascript"></script>
-        <script type="text/javascript">
+    <!-- Winners Modal -->
+    <div class="modal fade" id="winnersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">&nbsp;</h4>
+                </div>
+                <div class="modal-body">
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <h1 class="text-center"><strong><span id="winnerName"></span></strong></h1>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            var Attendee = function(data){
-                var self = this;
-                self.name = data.name;
-            }
+    <script type="text/html" id="template-attendee">
+        <li class='alert alert-success alert-dismissible'>
+            <button type='button' class='close' data-bind="click: $parent.remove_attendee">
+                <span>&times;</span>
+            </button>
+            <strong class='name' data-bind="text:name"></strong>
+        </li>
+    </script>
 
-            var PageViewModel = function(){
-                var self = this;
-
-                self.title = ko.observable("Xº Reunião NetPonto - Y");
-                self.attendees = ko.observableArray([]);
-                self.winners = ko.observableArray([]);
-                self.prizes = ko.observableArray([]);
-
-                self.load_file = function(selected_file){
-                    window.netponto_ns.selected_file = selected_file;
-                    var reader = new FileReader();
-                    reader.addEventListener("loadend", function(){
-                        var attendees = reader.result.split("\n").forEach(function(line){
-                            var name = line.trim();
-                            if (name == "") return;
-                            var attendee = new Attendee({name:line.trim()});
-                            self.attendees.push(attendee);
-                        });
-                        console.log("loaded attendees");
-                    });
-                    reader.readAsText(selected_file);
-                };
-
-                self.add_attendee = function(){
-                    var name = window.prompt('Nome?');
-                    if (name === "" || name === null) {
-                        return;
-                    }
-                    self.attendees.push(new Attendee({name:name.trim()}));
-                };
-                self.remove_attendee = function(attendee){
-                    self.attendees.remove(attendee);
-                };
-                self.clear_attendees = function(){
-                    self.attendees.removeAll();
-                };
-
-            }
-
-            $(function(){
-                var vm = new PageViewModel();
-                ko.applyBindings(vm);
-                window.netponto_ns = {vm:vm}
+    <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="js/tagcanvas.min.js" type="text/javascript"></script>
+    <script src="js/bootstrap.js" type="text/javascript"></script>
+    <script src="js/knockout-3.4.0.js" type="text/javascript"></script>
+    <script src="js/app.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var viewModel= null;
+        $(function() {
+            viewModel = new PageViewModel();
+            ko.applyBindings(viewModel);
+            window.netponto_ns = { vm: viewModel };
+            $("#roll").on("click", function() {
+                RollIt();
             });
+        });
+    </script>
+</body>
 
-            window.onerror = function (errorMsg, url, lineNumber) {
-                alert('Error: ' + errorMsg + '\n\nScript: ' + url + '\nLine: ' + lineNumber);
-            };
-
-            var canRoll = true;
-            var o = {
-                textFont: 'Arial, Helvetica, sans-serif',
-                maxSpeed: 0.05,
-                minSpeed: 0.01,
-                textColour: '#039',
-                textHeight: 25,
-                outlineMethod: 'colour',
-                fadeIn: 800,
-                outlineColour: '#900',
-                outlineOffset: 0,
-                depth: 0.97,
-                minBrightness: 0.2,
-                wheelZoom: false,
-                reverse: true,
-                shadowBlur: 2,
-                shuffleTags: true,
-                shadowOffset: [1, 1],
-                stretchX: 1.7,
-                initial: [0, 0.1],
-                clickToFront: 600,
-                noMouse: true
-            };
-
-            $(function () {
-                // Load all people
-
-                $("#roll").on("click", function () {
-                    RollIt();
-                });
-            });
-
-         
-
-            $("#start").on("click", function () {
-                console.log("start");
-
-                StartCloudTags();
-            });
-
-
-            function StartCloudTags() {
-                var s = (new Date).getTime() / 360;
-                o.initial[0] = 0.2 * Math.cos(s);
-                o.initial[1] = 0.2 * Math.sin(s);
-                TagCanvas.Start('canvas', 'tags', o);
-            }
-
-            function RollIt() {
-                // Check if modal is open
-                var isOpen = $("#winnersModal").hasClass('in');
-
-                if (isOpen)
-                    $("#winnersModal").modal('toggle');
-
-                canRoll = false;
-                GetItem(Math.floor(getRandomArbitrary(5, 10)));
-            }
-
-            function GetItem(index) {
-                console.log("GetItem", index);
-                if (index === 0) {
-                    console.log("TagToFront"),
-                            TagToFront();
-                    return;
-                }
-
-                --index;
-
-                var ms = getRandomArbitrary(500, 1500);
-                //console.log("random time", ms);
-                setTimeout(function () {
-                    //console.log("Rotate");
-                    Rotate();
-                    GetItem(index);
-                }, ms);
-            }
-
-            function getRandomArbitrary(min, max) {
-                return Math.random() * (max - min) + min;
-            }
-
-            function Rotate() {
-                TagCanvas.RotateTag('canvas', {
-                    index: Math.floor(Math.random() * 20), lat: -60, lng: -60, time: 800, active: 1
-                });
-            }
-
-            function TagToFront() {
-                TagCanvas.TagToFront('canvas', {
-                    index: Math.floor(Math.random() * $("#tags").children().length),
-                    active: 1,
-                    callback: result
-                });
-            }
-
-            function result(e, item) {
-                var value = item.text_original;
-                $("#tags").children('a').each(function () {
-
-                    if (value === this.text) {
-                        $(this).remove();
-                        $("#winnerName").text(value);
-                        $("#winnersModal").modal('toggle');
-                        setTimeout(function () {
-                            TagCanvas.Update('canvas');
-                            canRoll = true;
-                        }, 1000);
-                    }
-                });
-            }
-
-            $(document).keydown(function (e) {
-                switch (e.which) {
-                    case 72: // h
-                        if (canRoll) {
-                            RollIt();
-                        }
-                        break;
-                    default:
-                        return; // exit this handler for other keys
-                }
-                e.preventDefault(); // prevent the default action (scroll / move caret)
-            });
-        </script>
-    </body>
 </html>
