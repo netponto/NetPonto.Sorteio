@@ -1,0 +1,22 @@
+.alert {
+padding: 5px;
+margin-bottom: 5px;
+}
+
+.alert-dismissible .close {
+right: -2px;
+}
+
+img {
+width: 35%;
+margin-bottom: 10px;
+margin-top: 10px;
+}
+
+.attendee {
+display: inline;    
+}
+
+.tab-content {
+    margin-top: 10px;
+}
