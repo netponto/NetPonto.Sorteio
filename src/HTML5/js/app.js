@@ -1,9 +1,9 @@
-var Attendee = function(data) {
+var Attendee = function (data) {
     var self = this;
     self.name = data.name;
 };
 
-var PageViewModel = function() {
+var PageViewModel = function () {
     var self = this;
 
     self.title = ko.observable("Xº Reunião NetPonto - Y");
@@ -12,14 +12,14 @@ var PageViewModel = function() {
     self.prizes = ko.observableArray([]);
     self.started = ko.observable(false);
 
-    self.load_file = function(selected_file) {
+    self.load_file = function (selected_file) {
 
         window.netponto_ns.selected_file = selected_file;
 
         var reader = new FileReader();
 
-        reader.addEventListener("loadend", function() {
-            var attendees = reader.result.split("\n").forEach(function(line) {
+        reader.addEventListener("loadend", function () {
+            var attendees = reader.result.split("\n").forEach(function (line) {
                 var name = line.trim();
                 if (name === "")
                     return;
@@ -35,7 +35,7 @@ var PageViewModel = function() {
         }
     };
 
-    self.add_attendee = function() {
+    self.add_attendee = function () {
         var name = window.prompt('Nome?');
         if (name === "" || name === null) {
             return;
@@ -43,27 +43,27 @@ var PageViewModel = function() {
         self.attendees.push(new Attendee({ name: name.trim() }));
     };
 
-    self.remove_attendee = function(attendee) {
+    self.remove_attendee = function (attendee) {
         self.attendees.remove(attendee);
     };
 
-    self.clear_attendees = function() {
+    self.clear_attendees = function () {
         if (window.confirm('Tem a certeza que pretende limpar a lista?')) {
             self.attendees.removeAll();
         }
     };
 
-    self.start = function() {
+    self.start = function () {
         self.started(true);
         StartCloudTags();
     };
 
-    self.rollIt = function(){
+    self.rollIt = function () {
         RollIt();
     };
 };
 
-window.onerror = function(errorMsg, url, lineNumber) {
+window.onerror = function (errorMsg, url, lineNumber) {
     // for unexpected errors only
     alert('Error: ' + errorMsg + '\n\nScript: ' + url + '\nLine: ' + lineNumber);
 };
@@ -100,14 +100,17 @@ function StartCloudTags() {
 }
 
 function RollIt() {
-    // Check if modal is open
-    var isOpen = $("#winnersModal").hasClass('in');
+    if (canRoll) {
+        // Check if modal is open
+        var isOpen = $("#winnersModal").hasClass('in');
 
-    if (isOpen)
-        $("#winnersModal").modal('toggle');
+        if (isOpen) {
+            $("#winnersModal").modal('toggle');
+        }
 
-    canRoll = false;
-    GetItem(Math.floor(getRandomArbitrary(5, 10)));
+        canRoll = false;
+        GetItem(Math.floor(getRandomArbitrary(5, 10)));
+    }
 }
 
 function GetItem(index) {
@@ -120,7 +123,7 @@ function GetItem(index) {
     --index;
 
     var ms = getRandomArbitrary(500, 1500);
-    setTimeout(function() {
+    setTimeout(function () {
         Rotate();
         GetItem(index);
     }, ms);
@@ -146,13 +149,14 @@ function TagToFront() {
 
 function result(e, item) {
     var value = item.text_original;
-    $("#tags").children('a').each(function() {
+
+    $("#tags").children('a').each(function () {
         if (value === this.text) {
             $(this).remove();
             $("#winnerName").text(value);
             $("#winnersModal").modal('toggle');
             viewModel.winners.push(value);
-            setTimeout(function() {
+            setTimeout(function () {
                 TagCanvas.Update('canvas');
                 canRoll = true;
             }, 1000);
@@ -160,15 +164,14 @@ function result(e, item) {
     });
 }
 
-$(document).keydown(function(e) {
+$(document).keydown(function (e) {
     switch (e.which) {
-        case 72: // h
-        if (canRoll) {
+        // h
+        case 72:
             RollIt();
-        }
-        break;
+            break;
         default:
             return; // exit this handler for other keys
-        }
+    }
     e.preventDefault(); // prevent the default action (scroll / move caret)
 });
