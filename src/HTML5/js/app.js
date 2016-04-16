@@ -56,7 +56,11 @@ var PageViewModel = function() {
     self.start = function() {
         self.started(true);
         StartCloudTags();
-    }
+    };
+
+    self.rollIt = function(){
+        RollIt();
+    };
 };
 
 window.onerror = function(errorMsg, url, lineNumber) {
@@ -109,7 +113,7 @@ function RollIt() {
 function GetItem(index) {
     if (index === 0) {
         console.log("TagToFront"),
-            TagToFront();
+        TagToFront();
         return;
     }
 
@@ -159,12 +163,12 @@ function result(e, item) {
 $(document).keydown(function(e) {
     switch (e.which) {
         case 72: // h
-            if (canRoll) {
-                RollIt();
-            }
-            break;
+        if (canRoll) {
+            RollIt();
+        }
+        break;
         default:
             return; // exit this handler for other keys
-    }
+        }
     e.preventDefault(); // prevent the default action (scroll / move caret)
 });

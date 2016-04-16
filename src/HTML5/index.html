@@ -16,16 +16,19 @@
                 <img src="images/logo.png" alt="NetPonto Sorteio" title="NetPonto Sorteio" class="img-responsive" />
             </div>
             <div class="col-md-6 text-right">
-                <h1 data-bind="text:title"></h1>
+                <h1 data-bind="text: title"></h1>
             </div>
         </div>
 
         <!-- Tab list -->
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation"><a href="#tab-config" aria-controls="home" role="tab" data-toggle="tab">Config</a></li>
-            <li role="presentation" class="active"><a href="#tab-presencas" aria-controls="home" role="tab" data-toggle="tab">Presenças</a></li>
-            <li role="presentation"><a href="#tab-sorteio" aria-controls="profile" role="tab" data-toggle="tab">Sorteio</a></li>
-            <li role="presentation" data-bind="visible: started"><a href="#tab-winners" aria-controls="profile" role="tab" data-toggle="tab">Vencedores</a></li>
+            <li role="presentation"><a href="#tab-config" aria-controls="config" role="tab" data-toggle="tab">Config</a></li>
+            <li role="presentation" class="active"><a href="#tab-presencas" aria-controls="presenças" role="tab" data-toggle="tab">Presenças</a></li>
+            <li role="presentation"><a href="#tab-sorteio" aria-controls="sorteio" role="tab" data-toggle="tab">Sorteio</a></li>
+            <li role="presentation" data-bind="visible: started"><a href="#tab-winners" aria-controls="vencedores" role="tab" data-toggle="tab">Vencedores</a></li>
+            <li role="presentation" class="pull-right"><a data-bind="click: rollIt, visible: started" href="#" aria-controls="next random" role="tab">
+                <span class="glyphicon glyphicon-random"></span>
+            </a></li>
         </ul>
 
         <!-- Tab list content -->
@@ -39,131 +42,135 @@
                 </div>
                 <hr />
                 <h3>Como funciona?</h2>
-                <p>Carregue os participantes por ficheiro e/ou manualmente através dos botões disponibilizados na <code>tab</code> "<mark>Presenças</mark>".</p>
-                <p>Após os participantes estarem carregados, na <code>tab</code> "<mark>Sorteio</mark>" poderá dar inicio ao sorteio, carregando no botão "<mark>Start</mark>".</p>
-                <h3>Como sortear participantes?</h3>
-                <p>Com a tecla <code>h</code> poderá fazer sair o próximo. Nota que, apenas quando sai um, é que poderá fazer
-                    sair o seguinte.</p>
-                <h3>Vencedores?</h3>
-                <p>Após dar inicio ao sorteio, uma nova <code>tab</code> irá aparecer com o nome "<mark>Vencedores</mark>". Aí, por cada vez que sair um premiado, o seu nome irá aparecer numa lista.</p>
-            </div>
+                    <p>Carregue os participantes por ficheiro e/ou manualmente através dos botões disponibilizados na <code>tab</code> "<mark>Presenças</mark>".</p>
+                    <p>Após os participantes estarem carregados, na <code>tab</code> "<mark>Sorteio</mark>" poderá dar inicio ao sorteio, carregando no botão "<mark>Start</mark>".</p>
+                    <h3>Como sortear participantes?</h3>
+                    <p>Com a tecla <code>h</code> poderá fazer sair o próximo. Nota que, apenas quando sai um, é que poderá fazer
+                        sair o seguinte.</p>
+                        <h3>Vencedores?</h3>
+                        <p>Após dar inicio ao sorteio, uma nova <code>tab</code> irá aparecer com o nome "<mark>Vencedores</mark>". Aí, por cada vez que sair um premiado, o seu nome irá aparecer numa lista.</p>
+                    </div>
 
-            <!-- Attendees tab -->
-            <div role="tabpanel" class="tab-pane active fade in" id="tab-presencas">
-                <div class="row-fluid">
-                    <div class="col-xs-4 col-md-4">
-                        <div class="form-group">
-                            <label for="fileInput">Carregar lista de participantes</label>
-                            <input type="file" data-bind="event: { change: function() { load_file($element.files[0]) } }" id="fileInput">
-                            <p class="help-block">Ficheiro de texto simples com um nome por linha.</p>
+                    <!-- Attendees tab -->
+                    <div role="tabpanel" class="tab-pane active fade in" id="tab-presencas">
+                        <div class="row-fluid">
+                            <div class="col-xs-4 col-md-4">
+                                <div class="form-group">
+                                    <label for="fileInput">Carregar lista de participantes</label>
+                                    <input type="file" data-bind="event: { change: function() { load_file($element.files[0]) } }" id="fileInput">
+                                    <p class="help-block">Ficheiro de texto simples com um nome por linha.</p>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-8 col-md-8 text-right">
+                                <button type="button" class="btn btn-info" data-bind="click:add_attendee"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+                                <button type="button" class="btn btn-danger" data-bind="click:clear_attendees"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row-fluid text-center" id="initial">
+                            <!-- List -->
+                            <div class="container-fluid" id="listContainer">
+                                <div class="row">
+                                    <ul class="list-inline" id="listItems" data-bind="template: { name: 'template-attendee', foreach: attendees }">
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-xs-8 col-md-8 text-right">
-                        <button type="button" class="btn btn-info" data-bind="click:add_attendee"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-danger" data-bind="click:clear_attendees"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <!-- Giveaway tab -->
+                    <div role="tabpanel" class="tab-pane fade" id="tab-sorteio">
 
+                        <div class="row" data-bind="ifnot: started">
+                            <p>&nbsp;</p>
+                            <div class="col-md-4 col-lg-4">&nbsp;</div>
+                            <div class="col-md-4 col-lg-4">
+                                <div class="center-block">
+                                    <button type="button" id="start" data-bind="click: start" class="btn btn-lg btn-block btn-primary">Start</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4">&nbsp;</div>
+                        </div>
+                        
+                        <!-- Canvas -->
+                        <div class="bg-info text-center" id="cloudTags" data-bind="visible: started">
+                         <div class="row" id="canvasContainer">
+                            <canvas id="canvas" width="960" height="500">
+                                <p>Your browser does not support HTML 5 Canvas</p>
+                            </canvas>
+                        </div>
                     </div>
                 </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid text-center" id="initial">
-                    <!-- List -->
-                    <div class="container-fluid" id="listContainer">
-                        <div class="row">
-                            <ul class="list-inline" id="listItems" data-bind="template: { name: 'template-attendee', foreach: attendees }">
+
+                <!-- Winners tab -->
+                <div role="tabpanel" class="tab-pane fade" id="tab-winners" data-bind="visible: started">
+                    <div class="row-fluid">
+                        <div class="col-md-4 col-lg-4">
+                            <ul class="list-group" data-bind="foreach: winners">
+                                <li class="list-group-item" data-bind="text: $data"></li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Giveaway tab -->
-            <div role="tabpanel" class="tab-pane fade" id="tab-sorteio">
-
-                <div class="row" data-bind="ifnot: started">
-                    <p>&nbsp;</p>
-                    <div class="col-md-4 col-lg-4">&nbsp;</div>
-                    <div class="col-md-4 col-lg-4">
-                        <div class="center-block">
-                            <button type="button" id="start" data-bind="click: start" class="btn btn-lg btn-block btn-primary">Start</button>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-lg-4">&nbsp;</div>
-                </div>
-                <div class="bg-info text-center" id="cloudTags" data-bind="visible: started">
-                    <!-- Canvas -->
-                    <div class="row" id="canvasContainer">
-                        <canvas id="canvas" width="960" height="500">
-                            <p>Your browser does not support HTML 5 Canvas</p>
-                        </canvas>
-                    </div>
-                </div>
+            <div id="tags" class="hidden" data-bind="foreach:attendees">
+                <a href='javascript:void(0);' data-bind="text:name"></a>
             </div>
+        </div>
 
-            <!-- Winners tab -->
-            <div role="tabpanel" class="tab-pane fade" id="tab-winners" data-bind="visible: started">
-                <div class="row-fluid">
-                    <div class="col-md-4 col-lg-4">
-                        <ul class="list-group" data-bind="foreach: winners">
-                            <li class="list-group-item" data-bind="text: $data"></li>
-                        </ul>
+        <!-- Winners Modal -->
+        <div class="modal fade" id="winnersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                        <h1 class="text-center"><strong><span id="winnerName"></span></strong></h1>
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                        <button type="button" class="btn btn-success" data-bind="click: rollIt" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-random"></span>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="tags" class="hidden" data-bind="foreach:attendees">
-            <a href='javascript:void(0);' data-bind="text:name"></a>
-        </div>
-    </div>
+        <script type="text/html" id="template-attendee">
+            <li class='alert alert-success alert-dismissible'>
+                <button type='button' class='close' data-bind="click: $parent.remove_attendee">
+                    <span>&times;</span>
+                </button>
+                <strong class='name' data-bind="text:name"></strong>
+            </li>
+        </script>
 
-    <!-- Winners Modal -->
-    <div class="modal fade" id="winnersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">&nbsp;</h4>
-                </div>
-                <div class="modal-body">
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <h1 class="text-center"><strong><span id="winnerName"></span></strong></h1>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="text/html" id="template-attendee">
-        <li class='alert alert-success alert-dismissible'>
-            <button type='button' class='close' data-bind="click: $parent.remove_attendee">
-                <span>&times;</span>
-            </button>
-            <strong class='name' data-bind="text:name"></strong>
-        </li>
-    </script>
-
-    <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
-    <script src="js/tagcanvas.min.js" type="text/javascript"></script>
-    <script src="js/bootstrap.js" type="text/javascript"></script>
-    <script src="js/knockout-3.4.0.js" type="text/javascript"></script>
-    <script src="js/app.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        var viewModel= null;
-        $(function() {
-            viewModel = new PageViewModel();
-            ko.applyBindings(viewModel);
-            window.netponto_ns = { vm: viewModel };
-            $("#roll").on("click", function() {
-                RollIt();
+        <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+        <script src="js/tagcanvas.min.js" type="text/javascript"></script>
+        <script src="js/bootstrap.js" type="text/javascript"></script>
+        <script src="js/knockout-3.4.0.js" type="text/javascript"></script>
+        <script src="js/app.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            var viewModel= null;
+            $(function() {
+                viewModel = new PageViewModel();
+                ko.applyBindings(viewModel);
+                window.netponto_ns = { vm: viewModel };
+                $("#roll").on("click", function() {
+                    RollIt();
+                });
             });
-        });
-    </script>
-</body>
+        </script>
+    </body>
 
-</html>
+    </html>
