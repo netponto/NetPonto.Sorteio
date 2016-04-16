@@ -28,3 +28,7 @@ Thumbs.db
 [Tt]est[Rr]esult*/
 *.[Pp]ublish.xml
 _ReSharper*/
+
+#Ignore Sln for HTML 5 app
+src/HTML5/*.sln
+src/HTML5/.vs/
