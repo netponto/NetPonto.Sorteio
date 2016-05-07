@@ -12,6 +12,26 @@ var PageViewModel = function () {
     self.prizes = ko.observableArray([]);
     self.started = ko.observable(false);
 
+    var setup_localstorage_backing = function(fieldName) {
+        try{
+            var keyName = "sorteio_"+fieldName;
+            if(localStorage[keyName]){
+                self[fieldName](JSON.parse(localStorage[keyName]));
+            }
+        }catch(e){
+            console.error("Error loading value from localstorage for "+keyName);
+            console.error(e);
+        }
+
+        self[fieldName].subscribe(function(val) { localStorage[keyName] = JSON.stringify(val); });
+    };
+
+    ["title","attendees","winners","prizes"].forEach(setup_localstorage_backing);
+
+    self.nuke_storage = function (){
+        localStorage.clear();
+    }
+
     self.load_file = function (selected_file) {
 
         window.netponto_ns.selected_file = selected_file;

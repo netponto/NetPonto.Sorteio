@@ -43,6 +43,9 @@
                         <label for="title">Título:</label>
                         <input type="email" class="form-control" id="title" data-bind="textInput:title" placeholder="Título">
                     </div>
+                    <div class="form-group">
+                        <a href="#" data-bind="click:nuke_storage">Limpar dados guardados em <em>localstorage</em></a>
+                    </div>
                     <hr />
                     <div class="row-fluid">
                         <div class="col-md-4">
@@ -53,6 +56,7 @@
                                 <div class="panel-body">
                                     <p class="text-justify">Carregue os participantes por ficheiro e/ou manualmente através dos botões disponibilizados na <code>tab</code> "<mark>Presenças</mark>".</p>
                                     <p class="text-justify">Após os participantes estarem carregados, na <code>tab</code> "<mark>Sorteio</mark>" poderá dar inicio ao sorteio, carregando no botão "<mark>Start</mark>".</p>
+                                    <p class="text-justify">Todos os dados podem ser preparados e carregados antes do sorteio. Eles ficam guardados no browser em <em>localstorage</em></p>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +134,7 @@
                 </div>
 
                 <!-- Canvas -->
-                <div class="bg-info text-center" id="cloudTags" data-bind="visible: started">
+                <div class="bg-info text-center" id="cloudTags" data-bind="visible: started" style="display: none">
                     <div class="row" id="canvasContainer">
                         <canvas id="canvas" width="960" height="500">
                             <p>Your browser does not support HTML 5 Canvas</p>
@@ -140,7 +144,7 @@
             </div>
 
             <!-- Winners tab -->
-            <div role="tabpanel" class="tab-pane fade" id="tab-winners" data-bind="visible: started">
+            <div role="tabpanel" class="tab-pane fade" id="tab-winners" data-bind="visible: started" style="display: none">
                 <div class="row-fluid">
                     <div class="col-md-4 col-lg-4">
                         <ul class="list-group" data-bind="foreach: winners">
