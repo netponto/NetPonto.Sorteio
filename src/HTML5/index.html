@@ -158,6 +158,10 @@
         <div id="tags" class="hidden" data-bind="foreach:attendees">
             <a href='javascript:void(0);' data-bind="text:name"></a>
         </div>
+
+        <div class=".col-md-3 .col-md-offset-3" data-bind="visible:version" style="display:none;position:absolute;bottom:5px;left:5px;margin:0;padding:5px 3px;">
+            <a href="#" style="color: black; text-decoration: initial;" data-bind="attr: {title:version}" style="">π</a>
+        </div>
     </div>
 
     <!-- Winners Modal -->

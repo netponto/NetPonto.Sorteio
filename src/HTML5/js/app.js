@@ -11,6 +11,11 @@ var PageViewModel = function () {
     self.winners = ko.observableArray([]);
     self.prizes = ko.observableArray([]);
     self.started = ko.observable(false);
+    self.version = ko.observable("");
+
+    $.get("version").done(function(content){
+        self.version(content);
+    })
 
     var setup_localstorage_backing = function(fieldName) {
         try{
