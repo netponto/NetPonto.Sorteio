@@ -34,8 +34,9 @@ namespace SilverlightApp.Views
             var wrapPanel = ParticipantsList.GetItemsHost() as WrapPanel;
             if (wrapPanel == null) return;
 
-            wrapPanel.MaxHeight = ((FrameworkElement)sender).ActualHeight;
-            wrapPanel.MaxWidth = ((FrameworkElement)sender).ActualWidth;
+            wrapPanel.MaxHeight = ((FrameworkElement)sender).ActualHeight - 20;
+            
+            //wrapPanel.MaxWidth = ((FrameworkElement)sender).ActualWidth;
         }
 
         private void RemoveParticipant_Click(object sender, RoutedEventArgs e)
