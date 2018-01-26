@@ -11,6 +11,31 @@ var PageViewModel = function () {
     self.winners = ko.observableArray([]);
     self.prizes = ko.observableArray([]);
     self.started = ko.observable(false);
+    self.version = ko.observable("");
+
+    $.get("version").done(function(content){
+        self.version(content);
+    })
+
+    var setup_localstorage_backing = function(fieldName) {
+        try{
+            var keyName = "sorteio_"+fieldName;
+            if(localStorage[keyName]){
+                self[fieldName](JSON.parse(localStorage[keyName]));
+            }
+        }catch(e){
+            console.error("Error loading value from localstorage for "+keyName);
+            console.error(e);
+        }
+
+        self[fieldName].subscribe(function(val) { localStorage[keyName] = JSON.stringify(val); });
+    };
+
+    ["title","attendees","winners","prizes"].forEach(setup_localstorage_backing);
+
+    self.nuke_storage = function (){
+        localStorage.clear();
+    }
 
     self.load_file = function (selected_file) {
 
