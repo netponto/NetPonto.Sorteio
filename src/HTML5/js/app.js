@@ -188,15 +188,3 @@ function result(e, item) {
         }
     });
 }
-
-$(document).keydown(function (e) {
-    switch (e.which) {
-        // h
-        case 72:
-            RollIt();
-            break;
-        default:
-            return; // exit this handler for other keys
-    }
-    e.preventDefault(); // prevent the default action (scroll / move caret)
-});
